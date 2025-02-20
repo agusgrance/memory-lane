@@ -6,11 +6,7 @@ export const utapi = new UTApi();
 
 export const ourFileRouter = {
     imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
-        .middleware(() => {
-            return { userId: "test" };
-        })
         .onUploadComplete(async ({ file }) => {
-            console.log("Archivo subido", file);
             return { url: file.url, key: file.key };
         }),
 } satisfies FileRouter;

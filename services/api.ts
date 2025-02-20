@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:4001'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+const UPLOAD_API_URL = process.env.NEXT_PUBLIC_UPLOAD_API_URL
 
 export interface Memory {
     id?: number
@@ -59,7 +61,7 @@ export const memoryService = {
     async delete(id: number, imageKey?: string): Promise<void> {
         if (imageKey) {
             try {
-                await fetch(`/api/uploadthing/delete?key=${imageKey}`, {
+                await fetch(`${UPLOAD_API_URL}/delete?key=${imageKey}`, {
                     method: 'DELETE',
                 })
             } catch (error) {

@@ -1,25 +1,28 @@
 'use client'
 
 import { useState } from 'react'
+
+import { toast } from 'sonner'
+
 import { MemoryLane } from '@/components/MemoryLane'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { userService } from '@/services/api'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { EditProfileModal } from '@/components/EditProfileModal'
+import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
+
 import {
   CubeIcon,
   ShareIcon,
   EllipsisHorizontalIcon,
 } from '@heroicons/react/24/outline'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { userService } from '@/services/api'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
-import { EditProfileModal } from '@/components/EditProfileModal'
-import {
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '@/components/ui/dropdown-menu'
-import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { DropdownMenu } from '@/components/ui/dropdown-menu'
 
 export default function Home() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)

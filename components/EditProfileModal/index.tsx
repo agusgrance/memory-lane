@@ -1,16 +1,18 @@
+import { useState, useEffect } from 'react'
+
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { User, userService } from '@/services/api'
+
 import { toast } from 'sonner'
-import { useState, useEffect } from 'react'
+import { User, userService } from '@/services/api'
 
 interface EditProfileModalProps {
   user: User

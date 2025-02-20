@@ -1,14 +1,14 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { MemoryCard } from '../Card'
+import { MemoryCard } from '@/components/MemoryCard'
 import { MemoryLaneHeader } from './MemoryLaneHeader'
 import { MemoriesResponse, memoryService } from '@/services/api'
-import { MemoryCardSkeleton } from '../Card/MemoryCardSkeleton'
+import { MemoryCardSkeleton } from '@/components/MemoryCard/MemoryCardSkeleton'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { useInView } from 'react-intersection-observer'
-import { EmptyState } from '../EmptyState'
-import { CreateMemoryModal } from '../CreateMemoryModal'
+import { EmptyState } from '@/components/EmptyState'
+import { CreateMemoryModal } from '@/components/CreateMemoryModal'
 
 const MemoryLaneSkeleton = () => (
   <div className='space-y-4 animate-pulse'>

@@ -1,23 +1,25 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
+
+import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
+import { EditMemoryModal } from '@/components/EditMemoryModal'
 import {
   Card as ShadCard,
   CardContent,
   CardTitle,
   CardFooter,
 } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { EditMemoryModal } from '@/components/EditMemoryModal'
-import { Memory, memoryService } from '@/services/api'
+
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
+import { Memory, memoryService } from '@/services/api'
 
 interface MemoryCardProps {
   memory: Memory

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-export const EmptyState: React.FC = () => {
+export const EmptyState = () => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
