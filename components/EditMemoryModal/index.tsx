@@ -144,6 +144,7 @@ export const EditMemoryModal: React.FC<EditMemoryModalProps> = ({
               type='date'
               {...register('timestamp')}
               className='w-full p-2 border rounded-md'
+              max={new Date().toISOString().split('T')[0]}
             />
             {errors.timestamp && (
               <span className='text-sm text-red-500'>
