@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "serve:api": "nodemon api.js"
+    "serve:api": "nodemon api/main.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",

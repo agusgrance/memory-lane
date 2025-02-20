@@ -3,6 +3,11 @@
 ## 📂 Project Structure
 
 ```
+├── api/
+│   ├── controllers.js
+│   ├── db.js
+│   ├── middlewares.js
+│   └── main.js
 ├── app/
 │   ├── api/
 │   │   └── uploadthing/

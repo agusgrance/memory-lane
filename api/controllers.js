@@ -1,69 +1,4 @@
-import express from 'express'
-import cors from 'cors'
-import sqlite3 from 'sqlite3'
-import rateLimit from 'express-rate-limit'
-
-const app = express()
-app.use(cors())
-app.use(express.json())
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-})
-
-app.use(limiter)
-
-const db = new sqlite3.Database('memories.db', (err) => {
-  if (err) {
-    console.error('Error opening database:', err)
-  } else {
-    console.log('Database connected successfully')
-  }
-})
-
-db.run('PRAGMA journal_mode = WAL')
-
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS memories (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      description TEXT NOT NULL,
-      timestamp TEXT NOT NULL,
-      image TEXT
-    )
-  `)
-
-  db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      description TEXT NOT NULL
-    )
-  `)
-
-  db.get('SELECT * FROM users LIMIT 1', [], (err, user) => {
-    if (!user) {
-      db.run('INSERT INTO users (name, description) VALUES (?, ?)', [
-        'Agus',
-        "Agus's journey has been a tapestry of curiosity and exploration. From a young age, their inquisitive mind led them through diverse interests. Education shaped their multidisciplinary perspective, while personal experiences added depth and resilience to their story. Embracing challenges and cherishing relationships, Agus continues to craft a unique and inspiring life history.",
-      ])
-    }
-  })
-})
-
-const validateMemory = (req, res, next) => {
-  const { name, description, timestamp } = req.body
-  if (!name?.trim() || !description?.trim() || !timestamp) {
-    return res.status(400).json({
-      error: 'Invalid input: All fields must be non-empty strings',
-    })
-  }
-  next()
-}
-
-app.get('/memories', (req, res) => {
+export const handleGetMemories = (db) => (req, res) => {
   const { page = 1, limit = 5, sort = 'older' } = req.query
   const offset = (Number(page) - 1) * Number(limit)
   const orderBy = sort === 'older' ? 'ASC' : 'DESC'
@@ -88,9 +23,9 @@ app.get('/memories', (req, res) => {
       })
     }
   )
-})
+}
 
-app.post('/memories', validateMemory, (req, res) => {
+export const handlePostMemory = (db) => (req, res) => {
   const { name, description, timestamp, image } = req.body
 
   db.serialize(() => {
@@ -116,9 +51,9 @@ app.post('/memories', validateMemory, (req, res) => {
 
     stmt.finalize()
   })
-})
+}
 
-app.get('/memories/:id', (req, res) => {
+export const handleGetMemoryById = (db) => (req, res) => {
   const { id } = req.params
   db.get('SELECT * FROM memories WHERE id = ?', [id], (err, row) => {
     if (err) {
@@ -131,9 +66,9 @@ app.get('/memories/:id', (req, res) => {
     }
     res.json({ memory: row })
   })
-})
+}
 
-app.put('/memories/:id', (req, res) => {
+export const handleUpdateMemory = (db) => (req, res) => {
   const { id } = req.params
   const { name, description, timestamp, image } = req.body
 
@@ -154,9 +89,9 @@ app.put('/memories/:id', (req, res) => {
     }
     res.json({ message: 'Memory updated successfully' })
   })
-})
+}
 
-app.delete('/memories/:id', (req, res) => {
+export const handleDeleteMemory = (db) => (req, res) => {
   const { id } = req.params
   db.run('DELETE FROM memories WHERE id = ?', [id], (err) => {
     if (err) {
@@ -165,9 +100,9 @@ app.delete('/memories/:id', (req, res) => {
     }
     res.json({ message: 'Memory deleted successfully' })
   })
-})
+}
 
-app.get('/users/current', (req, res) => {
+export const handleGetCurrentUser = (db) => (req, res) => {
   db.get('SELECT * FROM users LIMIT 1', [], (err, user) => {
     if (err) {
       console.error('Database error:', err)
@@ -176,10 +111,9 @@ app.get('/users/current', (req, res) => {
     }
     res.json(user)
   })
-})
+}
 
-// Endpoint para actualizar el usuario
-app.put('/users/current', (req, res) => {
+export const handleUpdateUser = (db) => (req, res) => {
   const { name, description } = req.body
 
   db.run(
@@ -194,20 +128,4 @@ app.put('/users/current', (req, res) => {
       res.json({ message: 'User updated successfully' })
     }
   )
-})
-
-process.on('SIGINT', () => {
-  db.close((err) => {
-    if (err) {
-      console.error('Error closing database:', err)
-    } else {
-      console.log('Database connection closed')
-    }
-    process.exit(0)
-  })
-})
-
-const PORT = process.env.PORT || 4001
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+}
