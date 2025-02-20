@@ -47,7 +47,7 @@ This application is built using **Next.js 14** with **TypeScript**, providing a 
 - **Frontend**: Next.js 14, TypeScript, Tailwind CSS.
 - **Backend**: Express.js with SQLite database.
 - **State Management**: React Query for server state.
-- **UI Components**: Custom components built with Radix UI primitives.
+- **UI Components**: Custom components built with Radix UI primitives and Shadcn UI.
 - **Form Handling**: React Hook Form with Yup validation.
 - **Animations**: Framer Motion for smooth transitions.
 
