@@ -25,18 +25,20 @@ interface MemoryCardProps {
   index: number
 }
 
-export const MemoryCard: React.FC<MemoryCardProps> = ({
+export const MemoryCard = ({
   memory,
   onMemoryUpdated,
   index,
-}) => {
+}: MemoryCardProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   const handleDelete = async () => {
+    if (!memory.id) return
+
     if (window.confirm('Are you sure you want to delete this memory?')) {
       try {
         const imageKey = memory.image?.split('/').pop()
-        await memoryService.delete(memory.id!, imageKey)
+        await memoryService.delete(memory.id, imageKey)
         onMemoryUpdated()
         toast.success('Memory deleted successfully!')
       } catch (error) {
@@ -59,19 +61,21 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({
       >
         <ShadCard className='w-full max-w-3xl'>
           <CardContent className='pt-6 pb-0'>
-            <div className='flex gap-4'>
-              <div className='relative flex-shrink-0 w-20 h-20 overflow-hidden rounded-full bg-neutral-100'>
+            <div className='flex flex-col gap-4 sm:flex-row'>
+              <div className='relative w-32 h-32 mx-auto overflow-hidden rounded-full sm:mx-0 sm:w-20 sm:h-20 bg-neutral-100'>
                 <Image
                   src={memory.image || '/cactus.jpg'}
                   alt={memory.name}
                   fill
                   className='object-cover'
-                  sizes='80px'
-                  priority={false}
+                  sizes='(max-width: 640px) 128px, 80px'
+                  loading='lazy'
+                  placeholder='blur'
+                  blurDataURL='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQrJyEwSEw7SjsuLzlCRUFOMkI5QkVGTk9QVXNWWVdiZkZodnB3e3H/2wBDARUXFx4aHR4eHXF7gXtxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXH/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k='
                 />
               </div>
-              <div className='flex-1'>
-                <div className='flex items-start justify-between'>
+              <div className='flex-1 text-center sm:text-left'>
+                <div className='flex flex-col items-center justify-between sm:flex-row sm:items-start'>
                   <div>
                     <CardTitle className='text-xl font-semibold'>
                       {memory.name}

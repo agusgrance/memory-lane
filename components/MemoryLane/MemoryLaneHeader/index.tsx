@@ -14,17 +14,17 @@ interface MemoryLaneHeaderProps {
   onMemoryCreated: () => void
 }
 
-export const MemoryLaneHeader: React.FC<MemoryLaneHeaderProps> = ({
+export const MemoryLaneHeader = ({
   onSortChange,
   onMemoryCreated,
-}) => {
+}: MemoryLaneHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
     <>
-      <div className='flex items-center justify-between mb-6'>
+      <div className='flex flex-col items-center justify-between gap-4 mb-6 sm:flex-row sm:gap-0'>
         <Select defaultValue='older' onValueChange={onSortChange}>
-          <SelectTrigger className='w-[180px]'>
+          <SelectTrigger className='w-full sm:w-[180px]'>
             <SelectValue placeholder='Sort by' />
           </SelectTrigger>
           <SelectContent>
@@ -34,7 +34,7 @@ export const MemoryLaneHeader: React.FC<MemoryLaneHeaderProps> = ({
         </Select>
         <Button
           onClick={() => setIsModalOpen(true)}
-          className='text-gray-900 bg-white border border-gray-900 hover:bg-gray-900 hover:text-white'
+          className='w-full text-gray-900 bg-white border border-gray-900 sm:w-auto hover:bg-gray-900 hover:text-white'
         >
           <svg
             xmlns='http://www.w3.org/2000/svg'

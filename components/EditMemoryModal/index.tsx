@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Memory, memoryService } from '@/services/api'
@@ -100,9 +101,15 @@ export const EditMemoryModal: React.FC<EditMemoryModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent
+        className='sm:max-w-md md:max-w-lg'
+        aria-describedby='edit-memory-description'
+      >
         <DialogHeader>
           <DialogTitle>Edit Memory</DialogTitle>
+          <DialogDescription id='edit-memory-description'>
+            Make changes to your memory below. Click save when you're done.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
           <div>
@@ -143,13 +150,13 @@ export const EditMemoryModal: React.FC<EditMemoryModalProps> = ({
             )}
           </div>
           <div className='relative'>
-            <div className='relative w-full h-40 mt-4 overflow-hidden rounded-md'>
+            <div className='relative w-full h-32 mt-4 overflow-hidden rounded-md sm:h-40'>
               <Image
                 src={imageUrl}
                 alt='Memory'
                 fill
                 className='object-cover'
-                sizes='(max-width: 425px) 100vw'
+                sizes='(max-width: 640px) 100vw, (max-width: 1024px) 75vw, 50vw'
               />
               {isUploading && (
                 <div className='absolute inset-0 flex items-center justify-center bg-black/50'>

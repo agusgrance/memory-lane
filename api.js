@@ -1,10 +1,18 @@
-const express = require('express')
-const cors = require('cors')
-const sqlite3 = require('sqlite3').verbose()
+import express from 'express'
+import cors from 'cors'
+import sqlite3 from 'sqlite3'
+import rateLimit from 'express-rate-limit'
 
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+})
+
+app.use(limiter)
 
 const db = new sqlite3.Database('memories.db', (err) => {
   if (err) {
@@ -45,48 +53,45 @@ db.serialize(() => {
   })
 })
 
+const validateMemory = (req, res, next) => {
+  const { name, description, timestamp } = req.body
+  if (!name?.trim() || !description?.trim() || !timestamp) {
+    return res.status(400).json({
+      error: 'Invalid input: All fields must be non-empty strings',
+    })
+  }
+  next()
+}
+
 app.get('/memories', (req, res) => {
   const { page = 1, limit = 5, sort = 'older' } = req.query
   const offset = (Number(page) - 1) * Number(limit)
   const orderBy = sort === 'older' ? 'ASC' : 'DESC'
 
-  db.serialize(() => {
-    // Get total count
-    db.get('SELECT COUNT(*) as total FROM memories', [], (err, row) => {
+  db.all(
+    `
+    SELECT *, (SELECT COUNT(*) FROM memories) as total 
+    FROM memories 
+    ORDER BY timestamp ${orderBy} 
+    LIMIT ? OFFSET ?
+  `,
+    [Number(limit), offset],
+    (err, rows) => {
       if (err) {
-        res.status(500).json({ error: err.message })
-        return
+        return res.status(500).json({ error: err.message })
       }
-
-      // Get paginated results
-      db.all(
-        `SELECT * FROM memories ORDER BY timestamp ${orderBy} LIMIT ? OFFSET ?`,
-        [Number(limit), offset],
-        (err, memories) => {
-          if (err) {
-            res.status(500).json({ error: err.message })
-            return
-          }
-          res.json({
-            memories,
-            total: row.total,
-            hasMore: offset + memories.length < row.total,
-          })
-        }
-      )
-    })
-  })
+      const total = rows[0]?.total || 0
+      res.json({
+        memories: rows,
+        total,
+        hasMore: offset + rows.length < total,
+      })
+    }
+  )
 })
 
-app.post('/memories', (req, res) => {
+app.post('/memories', validateMemory, (req, res) => {
   const { name, description, timestamp, image } = req.body
-
-  if (!name || !description || !timestamp) {
-    res.status(400).json({
-      error: 'Please provide all required fields: name, description, timestamp',
-    })
-    return
-  }
 
   db.serialize(() => {
     const stmt = db.prepare(

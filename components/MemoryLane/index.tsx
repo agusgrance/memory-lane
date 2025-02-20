@@ -1,16 +1,28 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { MemoryCard } from '../Card'
 import { MemoryLaneHeader } from './MemoryLaneHeader'
 import { MemoriesResponse, memoryService } from '@/services/api'
 import { MemoryCardSkeleton } from '../Card/MemoryCardSkeleton'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { useInView } from 'react-intersection-observer'
-import { InfiniteData } from '@tanstack/react-query'
-import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState } from '../EmptyState'
 import { CreateMemoryModal } from '../CreateMemoryModal'
+
+const MemoryLaneSkeleton = () => (
+  <div className='space-y-4 animate-pulse'>
+    <div className='flex justify-between'>
+      <div className='w-32 h-10 bg-gray-200 rounded' />
+      <div className='w-24 h-10 bg-gray-200 rounded' />
+    </div>
+    <div className='flex flex-col items-center justify-center gap-4'>
+      {[1, 2, 3].map((i) => (
+        <MemoryCardSkeleton key={i} />
+      ))}
+    </div>
+  </div>
+)
 
 export const MemoryLane: React.FC = () => {
   const queryClient = useQueryClient()
@@ -18,21 +30,24 @@ export const MemoryLane: React.FC = () => {
   const { ref, inView } = useInView()
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
-    useInfiniteQuery<
-      MemoriesResponse,
-      Error,
-      InfiniteData<MemoriesResponse>,
-      [string, string],
-      number
-    >({
+  const queryConfig = useMemo(
+    () => ({
       queryKey: ['memories', sortOrder],
       queryFn: ({ pageParam = 1 }) =>
         memoryService.getAll(pageParam, sortOrder),
-      getNextPageParam: (lastPage, pages) =>
-        lastPage.hasMore ? pages.length + 1 : undefined,
+      getNextPageParam: (
+        lastPage: MemoriesResponse,
+        pages: MemoriesResponse[]
+      ) => (lastPage.hasMore ? pages.length + 1 : undefined),
       initialPageParam: 1,
-    })
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 30, // 30 minutes
+    }),
+    [sortOrder]
+  )
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
+    useInfiniteQuery(queryConfig)
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -47,15 +62,7 @@ export const MemoryLane: React.FC = () => {
   if (status === 'pending') {
     return (
       <div className='w-full py-6 mx-auto'>
-        <div className='flex items-center justify-between mb-6'>
-          <Skeleton className='w-[180px] h-10' />
-          <Skeleton className='w-32 h-10' />
-        </div>
-        <div className='flex flex-col items-center space-y-4'>
-          <MemoryCardSkeleton />
-          <MemoryCardSkeleton />
-          <MemoryCardSkeleton />
-        </div>
+        <MemoryLaneSkeleton />
       </div>
     )
   }

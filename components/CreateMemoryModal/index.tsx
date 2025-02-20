@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Memory, memoryService } from '@/services/api'
@@ -57,8 +58,6 @@ export const CreateMemoryModal: React.FC<CreateMemoryModalProps> = ({
     },
   })
 
-  console.log(isValid)
-
   const onSubmit = async (data: FormData) => {
     try {
       await memoryService.create(data as Memory)
@@ -75,9 +74,16 @@ export const CreateMemoryModal: React.FC<CreateMemoryModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent
+        className='sm:max-w-md md:max-w-lg'
+        aria-describedby='memory-form-description'
+      >
         <DialogHeader>
           <DialogTitle>Create New Memory</DialogTitle>
+          <DialogDescription id='memory-form-description'>
+            Fill in the details below to create a new memory. All fields are
+            required.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
           <div>
@@ -161,13 +167,13 @@ export const CreateMemoryModal: React.FC<CreateMemoryModalProps> = ({
               )}
               {previewUrl && (
                 <div className='relative'>
-                  <div className='relative w-full h-40 mt-4 overflow-hidden rounded-md'>
+                  <div className='relative w-full h-32 mt-4 overflow-hidden rounded-md sm:h-40'>
                     <Image
                       src={previewUrl}
                       alt='Preview'
                       fill
                       className='object-cover'
-                      sizes='(max-width: 425px) 100vw'
+                      sizes='(max-width: 640px) 100vw, (max-width: 1024px) 75vw, 50vw'
                     />
                   </div>
                   <Button

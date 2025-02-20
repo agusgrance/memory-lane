@@ -31,25 +31,26 @@ export default function Home() {
   const queryClient = useQueryClient()
 
   const handleShare = async () => {
+    if (!user) return
+
     try {
       await navigator.share({
-        title: `${user?.name}'s Memory Lane`,
-        text: user?.description,
+        title: `${user.name}'s Memory Lane`,
+        text: user.description,
         url: window.location.href,
       })
     } catch (error) {
-      // Fallback para navegadores que no soportan Web Share API
       navigator.clipboard.writeText(window.location.href)
       toast.success('Link copied to clipboard!')
     }
   }
 
   return (
-    <div className='flex h-full'>
-      <div className='fixed h-full p-4 shadow-lg w-fit'>
-        <CubeIcon className='w-16 h-16' />
+    <div className='flex flex-col h-full md:flex-row'>
+      <div className='sticky top-0 z-10 flex justify-center w-full p-4 bg-white border-b shadow-lg md:border-b-0 md:border-r md:w-fit md:h-full md:fixed'>
+        <CubeIcon className='w-12 h-12 md:w-16 md:h-16' />
       </div>
-      <div className='flex-1 py-12 overflow-y-auto px-36'>
+      <div className='flex-1 p-4 overflow-y-auto md:py-12 md:px-8 lg:px-36 md:ml-24'>
         {isLoading ? (
           <>
             <div className='flex items-center justify-between mb-4'>
@@ -64,11 +65,11 @@ export default function Home() {
           </>
         ) : (
           <>
-            <div className='flex items-center justify-between mb-4'>
-              <h1 className='text-4xl font-semibold text-gray-900'>
+            <div className='flex flex-col justify-between gap-4 mb-4 md:flex-row md:items-center md:gap-0'>
+              <h1 className='text-3xl font-semibold text-gray-900 md:text-4xl'>
                 {user?.name}'s Memory lane
               </h1>
-              <div className='flex gap-2'>
+              <div className='flex justify-end gap-2'>
                 <Button
                   variant='outline'
                   size='icon'

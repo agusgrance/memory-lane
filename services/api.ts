@@ -20,12 +20,20 @@ export interface User {
     description: string
 }
 
+const handleApiResponse = async <T>(response: Response): Promise<T> => {
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'An error occurred');
+    }
+    return response.json();
+};
+
 export const memoryService = {
     async getAll(page: number, sort: 'older' | 'newer'): Promise<MemoriesResponse> {
         const response = await fetch(
             `${API_URL}/memories?page=${page}&limit=5&sort=${sort}`
         )
-        return await response.json()
+        return handleApiResponse<MemoriesResponse>(response);
     },
 
     async create(memory: Memory): Promise<void> {
