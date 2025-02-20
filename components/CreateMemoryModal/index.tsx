@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 import {
   Dialog,
   DialogContent,
@@ -8,9 +11,10 @@ import {
 import { Button } from '@/components/ui/button'
 import { Memory, memoryService } from '@/services/api'
 import { toast } from 'sonner'
-import { Loader2 } from 'lucide-react'
+import { Loader2, X } from 'lucide-react'
+import Image from 'next/image'
 
-import { UploadDropzone } from '@/utils/uploadthing'
+import { UploadButton } from '@/utils/uploadthing'
 
 interface CreateMemoryModalProps {
   isOpen: boolean
@@ -18,25 +22,49 @@ interface CreateMemoryModalProps {
   onMemoryCreated: () => void
 }
 
+const schema = yup
+  .object({
+    name: yup.string().required('Title is required'),
+    description: yup.string().required('Description is required'),
+    timestamp: yup.string().required('Date is required'),
+    image: yup.string().required('Image is required'),
+  })
+  .required()
+
+type FormData = yup.InferType<typeof schema>
+
 export const CreateMemoryModal: React.FC<CreateMemoryModalProps> = ({
   isOpen,
   onClose,
   onMemoryCreated,
 }) => {
-  const [memory, setMemory] = useState<Partial<Memory>>({
-    name: '',
-    description: '',
-    timestamp: new Date().toISOString().split('T')[0],
-    image: '',
-  })
   const [isUploading, setIsUploading] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string>('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isValid },
+    reset,
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: '',
+      description: '',
+      timestamp: new Date().toISOString().split('T')[0],
+      image: '',
+    },
+  })
+
+  console.log(isValid)
+
+  const onSubmit = async (data: FormData) => {
     try {
-      await memoryService.create(memory as Memory)
+      await memoryService.create(data as Memory)
       onMemoryCreated()
+      reset()
+      setPreviewUrl('')
       onClose()
       toast.success('Memory created successfully!')
     } catch (error) {
@@ -51,80 +79,111 @@ export const CreateMemoryModal: React.FC<CreateMemoryModalProps> = ({
         <DialogHeader>
           <DialogTitle>Create New Memory</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className='space-y-4'>
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
           <div>
             <label className='text-sm font-medium'>Title</label>
             <input
-              type='text'
-              value={memory.name}
-              onChange={(e) => setMemory({ ...memory, name: e.target.value })}
+              {...register('name')}
               className='w-full p-2 border rounded-md'
-              required
             />
+            {errors.name && (
+              <span className='text-sm text-red-500'>
+                {errors.name.message}
+              </span>
+            )}
           </div>
           <div>
             <label className='text-sm font-medium'>Description</label>
             <textarea
-              value={memory.description}
-              onChange={(e) =>
-                setMemory({ ...memory, description: e.target.value })
-              }
+              {...register('description')}
               className='w-full p-2 border rounded-md'
-              required
             />
+            {errors.description && (
+              <span className='text-sm text-red-500'>
+                {errors.description.message}
+              </span>
+            )}
           </div>
           <div>
             <label className='text-sm font-medium'>Date</label>
             <input
               type='date'
-              value={memory.timestamp}
-              onChange={(e) =>
-                setMemory({ ...memory, timestamp: e.target.value })
-              }
+              {...register('timestamp')}
               className='w-full p-2 border rounded-md'
-              required
             />
+            {errors.timestamp && (
+              <span className='text-sm text-red-500'>
+                {errors.timestamp.message}
+              </span>
+            )}
           </div>
           <div>
             <label className='text-sm font-medium'>Image</label>
+            <p className='mb-2 text-sm text-gray-500'>
+              Upload a single image (max 4MB)
+            </p>
             <div className='mt-2'>
-              <UploadDropzone
-                endpoint='imageUploader'
-                onUploadBegin={(res) => {
-                  console.log('res', res)
-
-                  setIsUploading(true)
-                  setPreviewUrl('')
-                }}
-                onClientUploadComplete={(res) => {
-                  console.log('res', res)
-                  if (res?.[0]?.url) {
-                    setMemory({ ...memory, image: res[0].url })
-                    setPreviewUrl(res[0].url)
+              {!previewUrl && (
+                <UploadButton
+                  endpoint='imageUploader'
+                  onUploadBegin={() => {
+                    setIsUploading(true)
+                  }}
+                  onClientUploadComplete={(res) => {
+                    if (res?.[0]) {
+                      setPreviewUrl(res[0].url)
+                      setValue('image', res[0].url, {
+                        shouldValidate: true,
+                      })
+                      setIsUploading(false)
+                    }
+                  }}
+                  onUploadError={(error: Error) => {
                     setIsUploading(false)
-                    toast.success('Image uploaded successfully!')
-                  }
-                }}
-                onUploadError={(error: Error) => {
-                  setIsUploading(false)
-                  setPreviewUrl('')
-                  toast.error(`Upload failed: ${error.message}`)
-                  console.error('Upload error:', error)
-                }}
-              />
+                    setPreviewUrl('')
+                    setValue('image', '', {
+                      shouldValidate: true,
+                    })
+                    toast.error(`Upload failed: ${error.message}`)
+                  }}
+                />
+              )}
+              {errors.image && (
+                <span className='block mt-1 text-sm text-red-500'>
+                  {errors.image.message}
+                </span>
+              )}
               {isUploading && (
                 <div className='flex items-center gap-2 mt-2 text-sm text-gray-500'>
                   <Loader2 className='w-4 h-4 animate-spin' />
-                  Uploading image...
+                  Processing image...
                 </div>
               )}
               {previewUrl && (
-                <div className='relative w-full h-40 mt-4 overflow-hidden rounded-md'>
-                  <img
-                    src={previewUrl}
-                    alt='Preview'
-                    className='object-cover w-full h-full'
-                  />
+                <div className='relative'>
+                  <div className='relative w-full h-40 mt-4 overflow-hidden rounded-md'>
+                    <Image
+                      src={previewUrl}
+                      alt='Preview'
+                      fill
+                      className='object-cover'
+                      sizes='(max-width: 425px) 100vw'
+                    />
+                  </div>
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='sm'
+                    className='absolute top-2 right-2'
+                    onClick={() => {
+                      setPreviewUrl('')
+                      setValue('image', '', {
+                        shouldValidate: true,
+                      })
+                    }}
+                  >
+                    <X className='w-4 h-4' />
+                  </Button>
                 </div>
               )}
             </div>
@@ -133,7 +192,7 @@ export const CreateMemoryModal: React.FC<CreateMemoryModalProps> = ({
             <Button type='button' variant='outline' onClick={onClose}>
               Cancel
             </Button>
-            <Button type='submit' disabled={isUploading}>
+            <Button type='submit' disabled={isUploading || !isValid}>
               Create Memory
             </Button>
           </div>

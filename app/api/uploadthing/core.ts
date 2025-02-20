@@ -1,6 +1,8 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { UTApi } from "uploadthing/server";
 
 const f = createUploadthing();
+export const utapi = new UTApi();
 
 export const ourFileRouter = {
     imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
@@ -9,7 +11,7 @@ export const ourFileRouter = {
         })
         .onUploadComplete(async ({ file }) => {
             console.log("Archivo subido", file);
-            return { url: file.url };
+            return { url: file.url, key: file.key };
         }),
 } satisfies FileRouter;
 
