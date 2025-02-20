@@ -1,28 +1,106 @@
-# Planned coding challenge: Memory lane
+# Memory Lane
 
-**Please avoid initiating pull requests on this repository or forking this repository. To submit your solution, either set up a repository on your own account or forward a zip file to the appropriate contact within our talent team.**
+## 📂 Project Structure
 
-### Problem definition
+```
+├── app/
+│   ├── api/
+│   │   └── uploadthing/
+│   │       ├── core.ts
+│   │       └── route.ts
+│   ├── page.tsx
+│   └── metadata.ts
+├── components/
+│   ├── MemoryLane/
+│   ├── MemoryCard/
+│   ├── CreateMemoryModal/
+│   ├── EditMemoryModal/
+│   └── EditProfileModal/
+├── services/
+│   └── api.ts
+├── utils/
+│   ├── uploadthing.ts
+│   └── utils.ts
+├── public/
+├── lib/  # Memory Lane Implementation
+├── envs/
+│   ├── .env.local
+│   ├── .env.development
+│   ├── .env.production
+└── README.md
+```
 
-After a series of discovery calls we found out a problem that our users are facing. They are having a hard time sharing their memories with friends and family. They are using a combination of social media, messaging apps, and email to share their memories. They are looking for a solution that allows them to store and share their memories in a single place.
+## 🛠 Technical Overview
 
-As a first iteration for this solution, we want to build a web application that allows users to create a memory lane and share it with friends and family. A memory lane is a collection of events that happened in a chronological order. Each event consists of a title, a description, a timestamp, and at least one image.
+This application is built using **Next.js 14** with **TypeScript**, providing a modern and type-safe development experience. The implementation focuses on creating a responsive, user-friendly interface for sharing memories.
 
-## Deliverables
+### ✨ Key Features
 
-- Clone this repository and create a new branch with your name. Open a pull request on your own instance of the repository.
-- An updated README providing a high level explanation of your implementation.
-- **Screenshots or a short video/gif** showing your UI implementation.
-- Update the API to accommodate for your technical design. Run the API by using `npm run serve:api`.
-- The provided mockup is only for reference and inspiration. Feel free to improve it!
+- **Memory Management**: Users can create, edit, and delete memories with titles, descriptions, timestamps, and images.
+- **Infinite Scroll**: Implemented pagination with infinite scroll for optimal performance.
+- **Image Upload**: Integrated with **UploadThing** for secure image handling.
+- **Responsive Design**: Mobile-first approach using **Tailwind CSS**.
+- **Real-time Updates**: Uses **React Query** for efficient data fetching and cache management.
+- **Sorting**: Memories can be sorted from older to newer or vice versa.
 
-### FAQ
+### 🏗 Technical Stack
 
-- **Can I add a framework like Next?** If you have the time, go for it, we want to see you use your favorite tools.
-- **Is user authentication required?** No, it is not required.
-- **Can I use a component library?** Yes, you can use a component library.
-- **What will you be looking for?** Good user experience, reusable code, and a well thought out technical design.
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS.
+- **Backend**: Express.js with SQLite database.
+- **State Management**: React Query for server state.
+- **UI Components**: Custom components built with Radix UI primitives.
+- **Form Handling**: React Hook Form with Yup validation.
+- **Animations**: Framer Motion for smooth transitions.
 
-### Inspiration mockup
+### 📐 Architecture
 
-![Memory lane mockup](./memory_lane.png)
+The application follows a clean architecture pattern with:
+
+- **Components**: Reusable UI components with clear separation of concerns.
+- **Services**: API integration layer for backend communication.
+- **Hooks**: Custom hooks for shared functionality.
+- **Utils**: Utility functions and helpers.
+- **API Routes**: Backend endpoints for data management.
+
+### 🚀 Performance Considerations
+
+- Implemented image optimization using **Next.js Image component**.
+- Efficient data fetching with **React Query caching**.
+- Lazy loading of images and components.
+- Debounced scroll handlers for better performance.
+
+### 🔒 Security Features
+
+- Rate limiting on API endpoints.
+- Input validation and sanitization.
+- Secure image upload handling using **UploadThing**.
+- Error boundary implementation.
+
+## 🚀 Getting Started
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo.git
+   ```
+2. Install dependencies:
+   ```sh
+   yarn
+   ```
+3. Create a `.env.local` file based on `.env.example` and configure environment variables.
+4. Start the development server:
+   ```sh
+   yarn dev
+   ```
+5. Start the API server:
+   ```sh
+   yarn serve:api
+   ```
+
+## 📡 API Endpoints
+
+- `GET /memories`: Fetch paginated memories.
+- `POST /memories`: Create new memory.
+- `PUT /memories/:id`: Update existing memory.
+- `DELETE /memories/:id`: Delete memory.
+- `GET /users/current`: Get current user.
+- `PUT /users/current`: Update user profile.
