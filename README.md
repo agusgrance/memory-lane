@@ -22,7 +22,7 @@
 │   ├── uploadthing.ts
 │   └── utils.ts
 ├── public/
-├── lib/  # Memory Lane Implementation
+├── lib/
 ├── envs/
 │   ├── .env
 │   ├── .env.example
