@@ -24,9 +24,8 @@
 ├── public/
 ├── lib/  # Memory Lane Implementation
 ├── envs/
-│   ├── .env.local
-│   ├── .env.development
-│   ├── .env.production
+│   ├── .env
+│   ├── .env.example
 └── README.md
 ```
 
@@ -86,7 +85,7 @@ The application follows a clean architecture pattern with:
    ```sh
    yarn
    ```
-3. Create a `.env.local` file based on `.env.example` and configure environment variables.
+3. Create a `.env` file based on `.env.example` and configure environment variables.
 4. Start the development server:
    ```sh
    yarn dev
