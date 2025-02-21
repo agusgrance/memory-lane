@@ -26,8 +26,14 @@ interface CreateMemoryModalProps {
 
 const schema = yup
   .object({
-    name: yup.string().required('Title is required'),
-    description: yup.string().required('Description is required'),
+    name: yup
+      .string()
+      .max(50, 'Title must be at most 50 characters')
+      .required('Title is required'),
+    description: yup
+      .string()
+      .max(140, 'Description must be at most 140 characters')
+      .required('Description is required'),
     timestamp: yup.string().required('Date is required'),
     image: yup.string().required('Image is required'),
   })
@@ -48,6 +54,7 @@ export const CreateMemoryModal: React.FC<CreateMemoryModalProps> = ({
     handleSubmit,
     setValue,
     formState: { errors, isValid },
+    watch,
     reset,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -92,7 +99,11 @@ export const CreateMemoryModal: React.FC<CreateMemoryModalProps> = ({
             <input
               {...register('name')}
               className='w-full p-2 border rounded-md'
+              maxLength={50}
             />
+            <span className='text-sm text-gray-500'>{`${
+              watch('name')?.length || 0
+            }/50`}</span>
             {errors.name && (
               <span className='text-sm text-red-500'>
                 {errors.name.message}
@@ -104,7 +115,11 @@ export const CreateMemoryModal: React.FC<CreateMemoryModalProps> = ({
             <textarea
               {...register('description')}
               className='w-full p-2 border rounded-md'
+              maxLength={140}
             />
+            <span className='text-sm text-gray-500'>{`${
+              watch('description')?.length || 0
+            }/140`}</span>
             {errors.description && (
               <span className='text-sm text-red-500'>
                 {errors.description.message}

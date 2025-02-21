@@ -33,6 +33,7 @@ export const MemoryCard = ({
   index,
 }: MemoryCardProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
 
   const handleDelete = async () => {
     if (!memory.id) return
@@ -65,6 +66,9 @@ export const MemoryCard = ({
           <CardContent className='pt-6 pb-0'>
             <div className='flex flex-col gap-4 sm:flex-row'>
               <div className='relative w-32 h-32 mx-auto overflow-hidden rounded-full sm:mx-0 sm:w-20 sm:h-20 bg-neutral-100'>
+                {!isImageLoaded && (
+                  <div className='w-full h-full bg-gray-200 rounded-full skeleton-loader' />
+                )}
                 <Image
                   src={memory.image || '/cactus.jpg'}
                   alt={memory.name}
@@ -73,10 +77,11 @@ export const MemoryCard = ({
                   sizes='(max-width: 640px) 128px, 80px'
                   loading='lazy'
                   placeholder='blur'
-                  blurDataURL='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQrJyEwSEw7SjsuLzlCRUFOMkI5QkVGTk9QVXNWWVdiZkZodnB3e3H/2wBDARUXFx4aHR4eHXF7gXtxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXH/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k='
+                  blurDataURL='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQrJyEwSEw7SjsuLzlCRUFOMkI5QkVGTk9QVXNWWVdiZkZodnB3e3H/2wBDARUXFx4aHR4eHXF7gXtxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXH/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k='
+                  onLoad={() => setIsImageLoaded(true)}
                 />
               </div>
-              <div className='flex-1 text-center sm:text-left'>
+              <div className='flex-1 max-w-xl text-center sm:text-left'>
                 <div className='flex flex-col items-center justify-between sm:flex-row sm:items-start'>
                   <div>
                     <CardTitle className='text-xl font-semibold'>
@@ -87,7 +92,7 @@ export const MemoryCard = ({
                     </p>
                   </div>
                 </div>
-                <p className='mt-2 text-muted-foreground'>
+                <p className='mt-2 overflow-auto break-words text-muted-foreground max-h-32'>
                   {memory.description}
                 </p>
               </div>
