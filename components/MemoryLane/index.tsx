@@ -67,12 +67,11 @@ export const MemoryLane: React.FC = () => {
           queryClient.invalidateQueries({ queryKey: ['memories'] })
         }}
       />
-      {status === 'pending' && (
+      {status === 'pending' ? (
         <div className='w-full py-6 mx-auto'>
           <MemoryLaneSkeleton />
         </div>
-      )}
-      {!hasMemories ? (
+      ) : !hasMemories && status === 'success' ? (
         <EmptyState />
       ) : (
         <div className='flex flex-col items-center space-y-4'>
@@ -93,7 +92,7 @@ export const MemoryLane: React.FC = () => {
           )}
 
           {(isFetchingNextPage || hasNextPage) && (
-            <div ref={ref} className='w-full py-4'>
+            <div ref={ref} className='flex items-center justify-center w-full'>
               <MemoryCardSkeleton />
             </div>
           )}
