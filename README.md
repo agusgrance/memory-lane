@@ -28,9 +28,8 @@
 │   └── utils.ts
 ├── public/
 ├── lib/
-├── envs/
-│   ├── .env
-│   ├── .env.example
+├── .env
+├── .env.example
 └── README.md
 ```
 
