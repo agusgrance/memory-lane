@@ -84,7 +84,7 @@ The application follows a clean architecture pattern with:
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo.git
+   git clone https://github.com/agusgrance/memory-lane
    ```
 2. Install dependencies:
    ```sh
@@ -108,3 +108,13 @@ The application follows a clean architecture pattern with:
 - `DELETE /memories/:id`: Delete memory.
 - `GET /users/current`: Get current user.
 - `PUT /users/current`: Update user profile.
+
+## 📸 Screenshots
+
+![Memory Lane](./public/screenshots/memory-lane.png)
+![Edit Memory](./public/screenshots/edit-memory.png)
+![Edit Profile](./public/screenshots/edit-profile.png)
+
+## 🎥 Video Demo
+
+[Memory Lane Demo](https://www.loom.com/share/d767b8f01e664e7a990e4c58a4e66ede?sid=9b4a69d5-6f50-4fb3-a815-492a2321d9e6)
