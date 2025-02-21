@@ -14,10 +14,6 @@ import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 
 const MemoryLaneSkeleton = () => (
   <div className='space-y-4 animate-pulse'>
-    <div className='flex justify-between'>
-      <div className='w-32 h-10 bg-gray-200 rounded' />
-      <div className='w-24 h-10 bg-gray-200 rounded' />
-    </div>
     <div className='flex flex-col items-center justify-center gap-4'>
       {[1, 2, 3].map((i) => (
         <MemoryCardSkeleton key={i} />
@@ -61,14 +57,6 @@ export const MemoryLane: React.FC = () => {
     setSortOrder(value as 'older' | 'newer')
   }
 
-  if (status === 'pending') {
-    return (
-      <div className='w-full py-6 mx-auto'>
-        <MemoryLaneSkeleton />
-      </div>
-    )
-  }
-
   const hasMemories = data?.pages?.[0]?.memories?.length ?? 0 > 0
 
   return (
@@ -79,6 +67,11 @@ export const MemoryLane: React.FC = () => {
           queryClient.invalidateQueries({ queryKey: ['memories'] })
         }}
       />
+      {status === 'pending' && (
+        <div className='w-full py-6 mx-auto'>
+          <MemoryLaneSkeleton />
+        </div>
+      )}
       {!hasMemories ? (
         <EmptyState />
       ) : (

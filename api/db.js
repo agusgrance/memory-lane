@@ -42,8 +42,8 @@ export const insertDefaultUser = (db) => {
   db.get('SELECT * FROM users LIMIT 1', [], (err, user) => {
     if (!user) {
       db.run('INSERT INTO users (name, description) VALUES (?, ?)', [
-        'Agus',
-        "Agus's journey has been a tapestry of curiosity and exploration. From a young age, their inquisitive mind led them through diverse interests. Education shaped their multidisciplinary perspective, while personal experiences added depth and resilience to their story. Embracing challenges and cherishing relationships, Agus continues to craft a unique and inspiring life history.",
+        'Agustin Grance',
+        "Agustín's journey is fueled by curiosity and a passion for building. From exploring code at an early age to crafting web and mobile experiences, he thrives on learning, problem-solving, and pushing creative boundaries. Embracing challenges and new technologies, he continues to shape his ever-evolving path in the world of development. 🚀",
       ])
     }
   })
